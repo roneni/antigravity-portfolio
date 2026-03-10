@@ -15,14 +15,14 @@ export default function Hero() {
           </span>
         </h1>
       </motion.div>
-      
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
       >
         <p className="text-xl md:text-2xl font-light max-w-3xl leading-relaxed border-l-2 border-[var(--theme-accent)] pl-6 py-2 text-gray-600">
-          Full-Stack Developer & AI Engineer. <br />
+          Product Creator - I Remove The NoiZe <br />
           Building clean, modern interfaces and intelligent systems.
         </p>
       </motion.div>
