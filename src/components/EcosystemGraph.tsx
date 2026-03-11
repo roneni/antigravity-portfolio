@@ -19,21 +19,31 @@ import { Code2, Github, LayoutGrid } from 'lucide-react';
 
 // === Custom Nodes ===
 const ProjectNode = ({ data }: { data: { project: Project; onClick: (p: Project) => void } }) => {
+    const isFeatured = data.project.featured;
     return (
         <div
-            className="px-5 py-3 shadow-xl rounded-2xl bg-[var(--theme-bg)] border-2 border-[var(--theme-accent)] cursor-pointer hover:shadow-[0_0_20px_var(--theme-accent)] transition-all group"
+            className={`px-5 py-3 shadow-xl rounded-2xl bg-[var(--theme-bg)] cursor-pointer transition-all group relative ${isFeatured
+                    ? 'border-4 border-[var(--theme-accent)] scale-110 hover:shadow-[0_0_30px_var(--theme-accent)]'
+                    : 'border-2 border-[var(--theme-border)] hover:border-[var(--theme-accent)] hover:shadow-[0_0_20px_var(--theme-accent)]'
+                }`}
             onClick={() => data.onClick(data.project)}
             style={{
-                boxShadow: data.project.status.includes('Live') ? '0 0 15px rgba(var(--theme-accent-rgb), 0.3)' : undefined
+                boxShadow: (data.project.status.includes('Live') || isFeatured) ? '0 0 15px rgba(var(--theme-accent-rgb), 0.6)' : undefined,
+                zIndex: isFeatured ? 10 : 1
             }}
         >
+            {isFeatured && (
+                <div className="absolute -top-3 -right-3 bg-[var(--theme-accent)] text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-lg animate-bounce">
+                    ★ Featured
+                </div>
+            )}
             <Handle type="target" position={Position.Top} className="!w-2 !h-2 !bg-[var(--theme-accent)] !border-none" />
-            <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[var(--theme-accent)]/10 text-[var(--theme-accent)] group-hover:scale-110 transition-transform">
-                    <LayoutGrid className="w-5 h-5" />
+            <div className={`flex items-center gap-3 ${isFeatured ? 'p-2' : ''}`}>
+                <div className={`p-2 rounded-lg bg-[var(--theme-accent)]/10 text-[var(--theme-accent)] group-hover:scale-110 transition-transform ${isFeatured ? 'bg-[var(--theme-accent)]/20' : ''}`}>
+                    <LayoutGrid className={isFeatured ? "w-6 h-6" : "w-5 h-5"} />
                 </div>
                 <div>
-                    <h3 className="text-sm font-bold text-[var(--theme-text)]">{data.project.title}</h3>
+                    <h3 className={`${isFeatured ? 'text-lg' : 'text-sm'} font-bold text-[var(--theme-text)]`}>{data.project.title}</h3>
                     <p className="text-[10px] text-[var(--theme-text)] opacity-60 uppercase tracking-widest mt-0.5">{data.project.status}</p>
                 </div>
             </div>
@@ -73,16 +83,34 @@ export default function EcosystemGraph() {
         const initialNodes: Node[] = [];
         const initialEdges: Edge[] = [];
 
-        // Projects Row (Y = center)
-        const projectY = 250;
+        // Projects Row
+        const normalProjectsY = 300;
+        const featuredProjectY = 100;
 
-        // Position projects horizontally
-        projects.forEach((proj, idx) => {
+        // Position projects
+        const normalProjects = projects.filter(p => !p.featured);
+        const featuredProject = projects.find(p => p.featured);
+
+        let normalIdx = 0;
+        projects.forEach((proj) => {
             const projId = `proj-${proj.id}`;
+            let posX = 0;
+            let posY = 0;
+
+            if (proj.featured) {
+                // Center the featured project above the rest
+                posX = ((normalProjects.length - 1) * xSpacing) / 2;
+                posY = featuredProjectY;
+            } else {
+                posX = normalIdx * xSpacing;
+                posY = normalProjectsY;
+                normalIdx++;
+            }
+
             initialNodes.push({
                 id: projId,
                 type: 'project',
-                position: { x: idx * xSpacing, y: projectY },
+                position: { x: posX, y: posY },
                 data: { project: proj, onClick: (p: Project) => setActiveProject(p) },
             });
         });
@@ -91,8 +119,8 @@ export default function EcosystemGraph() {
         const techStackNodesAdded = new Set<string>();
 
         // Alternating top and bottom rows for tech stacks
-        const topRowY = 50;
-        const bottomRowY = 450;
+        const topRowY = -50;
+        const bottomRowY = 500;
         let stackCounter = 0;
 
         allTechStacks.forEach((stack) => {
@@ -101,7 +129,7 @@ export default function EcosystemGraph() {
 
             const isTop = stackCounter % 2 === 0;
             // Spread them across the X axis
-            const stackX = (stackCounter * (xSpacing * projects.length) / allTechStacks.length);
+            const stackX = (stackCounter * (xSpacing * normalProjects.length) / Math.max(1, allTechStacks.length - 1));
             const stackY = isTop ? topRowY : bottomRowY;
 
             initialNodes.push({
@@ -122,7 +150,8 @@ export default function EcosystemGraph() {
                 if (!stackNode) return;
 
                 // Find if stack is above or below
-                const isStackAbove = stackNode.position.y < projectY;
+                const projNode = initialNodes.find(n => n.id === projNodeId);
+                const isStackAbove = stackNode.position.y < (projNode?.position.y || 250);
 
                 initialEdges.push({
                     id: `e-${projNodeId}-${stackNodeId}`,

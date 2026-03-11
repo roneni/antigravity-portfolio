@@ -16,7 +16,7 @@ export default function About() {
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -30,11 +30,11 @@ export default function About() {
             Recently, I launched <a href="https://harmonyset.com" target="_blank" rel="noreferrer" className="text-[var(--theme-accent)] font-medium hover:underline transition-colors">HarmonySet</a> on Peerlist Launchpad and got it ranked. I'm also currently enrolled in Google's <span className="font-medium text-[var(--theme-text)]">GEAR Developer Program</span>, focusing on building AI agents that make it to production.
           </p>
           <p>
-            My stack is centered around Next.js, TypeScript, and Supabase. Whether I'm wiring up the Gemini API for <span className="italic">Psychedelic Universe</span> or building out a new Content Creation Management engine with Drizzle ORM, my goal is always the same: build robust, well-designed applications and get them live.
+            My stack is centered around Next.js, TypeScript, and Supabase. Whether I'm architecting a new multi-agent AI system like <span className="italic font-medium text-[var(--theme-accent)]">Design Super Agent</span> or wiring up the Gemini API for <span className="italic">Universe Diffusion</span>, my goal is always the same: build robust, intelligent systems and get them live.
           </p>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -44,16 +44,16 @@ export default function About() {
           <h3 className="font-display text-xl font-semibold mb-4 border-b border-[var(--theme-border)] pb-2">Current Status</h3>
           <ul className="space-y-4 font-medium text-base text-gray-600">
             <li className="flex items-center gap-3">
-              <div className="w-3 h-3 bg-[var(--theme-accent)] rounded-full animate-pulse"></div>
-              Building Visionary Studio
+              <div className="w-3 h-3 bg-[var(--theme-accent)] rounded-full animate-pulse shadow-[0_0_8px_var(--theme-accent)]"></div>
+              Building Design Super Agent
+            </li>
+            <li className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-[var(--theme-accent)] rounded-full"></div>
+              AI Breakthrough Awards 2026 Nominee
             </li>
             <li className="flex items-center gap-3">
               <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
               Google GEAR Program
-            </li>
-            <li className="flex items-center gap-3">
-              <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-              Scaling HarmonySet
             </li>
           </ul>
         </motion.div>
